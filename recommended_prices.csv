@@ -1,0 +1,4 @@
+sku,cost,current_price,competitor_price,recommended_price,predicted_demand,projected_profit,margin_pct
+SKU_A,25.0,49.99,45.0,73.53,49.0,2362.03,66.0
+SKU_B,45.0,89.99,95.0,132.35,43.0,3762.13,66.0
+SKU_C,15.0,29.99,28.0,44.12,37.0,1081.87,66.0
