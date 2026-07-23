@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiPrice Dashboard</title>
+    <style>
+        body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+        .card { border: 1px solid #ccc; padding: 1.5rem; border-radius: 8px; }
+        input { display: block; margin: 10px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+        button { background: #000; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px;}
+        button:hover { background: #333; }
+        #result { margin-top: 15px; font-weight: bold; color: #0070f3; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>OptiPrice Approval Dashboard</h2>
+        
+        <label>Competitor Price ($):</label>
+        <input type="number" id="compPrice" value="100.00">
+        
+        <label>Inventory Level (units):</label>
+        <input type="number" id="invLevel" value="45">
+        
+        <label>Sales Velocity (units/day):</label>
+        <input type="number" id="velocity" value="120">
+        
+        <button onclick="calculatePrice()">Run ML Pipeline</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function calculatePrice() {
+            const data = {
+                competitor_price: parseFloat(document.getElementById('compPrice').value),
+                inventory_level: parseInt(document.getElementById('invLevel').value),
+                sales_velocity: parseFloat(document.getElementById('velocity').value)
+            };
+
+            const res = await fetch('/api/optimize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            document.getElementById('result').innerText = 
+                `Recommended Price: $${result.recommended_price} (Margin Protected: ${result.margin_protected})`;
+        }
+    </script>
+</body>
+</html>
