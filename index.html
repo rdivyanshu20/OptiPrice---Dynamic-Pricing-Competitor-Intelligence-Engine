@@ -10,7 +10,7 @@
         input { display: block; margin: 10px 0; padding: 8px; width: 100%; box-sizing: border-box; }
         button { background: #000; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px;}
         button:hover { background: #333; }
-        #result { margin-top: 15px; font-weight: bold; color: #0070f3; text-align: center; }
+        #result { margin-top: 15px; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -32,41 +32,41 @@
     </div>
 
     <script>
-    async function calculatePrice() {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerText = "Calculating (Running ML Pipeline)...";
-        resultDiv.style.color = "black";
+        async function calculatePrice() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = "Calculating (Running ML Pipeline)...";
+            resultDiv.style.color = "black";
 
-        try {
-            const data = {
-                competitor_price: parseFloat(document.getElementById('compPrice').value),
-                inventory_level: parseInt(document.getElementById('invLevel').value),
-                sales_velocity: parseFloat(document.getElementById('velocity').value)
-            };
+            try {
+                const data = {
+                    competitor_price: parseFloat(document.getElementById('compPrice').value),
+                    inventory_level: parseInt(document.getElementById('invLevel').value),
+                    sales_velocity: parseFloat(document.getElementById('velocity').value)
+                };
 
-            const res = await fetch('/api/optimize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
+                const res = await fetch('/api/optimize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-            // Check if Vercel threw a 500 or 404 error
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Server Error (${res.status}): ${errorText.substring(0, 100)}`);
-            }
+                // Check if Vercel threw a 500 or 404 error
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Server Error (${res.status}): ${errorText.substring(0, 100)}`);
+                }
 
-            const result = await res.json();
-            
-            resultDiv.style.color = "#0070f3";
-            resultDiv.innerText = 
-                `Recommended Price: $${result.recommended_price} (Margin Protected: ${result.margin_protected})`;
+                const result = await res.json();
                 
-        } catch (error) {
-            resultDiv.style.color = "red";
-            resultDiv.innerText = "Error: " + error.message;
+                resultDiv.style.color = "#0070f3";
+                resultDiv.innerText = 
+                    `Recommended Price: $${result.recommended_price} (Margin Protected: ${result.margin_protected})`;
+                    
+            } catch (error) {
+                resultDiv.style.color = "red";
+                resultDiv.innerText = "Error: " + error.message;
+            }
         }
-    }
-  </script>
+    </script>
 </body>
 </html>
