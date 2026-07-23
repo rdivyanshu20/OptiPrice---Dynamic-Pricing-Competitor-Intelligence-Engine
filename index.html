@@ -32,7 +32,12 @@
     </div>
 
     <script>
-        async function calculatePrice() {
+    async function calculatePrice() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerText = "Calculating (Running ML Pipeline)...";
+        resultDiv.style.color = "black";
+
+        try {
             const data = {
                 competitor_price: parseFloat(document.getElementById('compPrice').value),
                 inventory_level: parseInt(document.getElementById('invLevel').value),
@@ -45,10 +50,23 @@
                 body: JSON.stringify(data)
             });
 
+            // Check if Vercel threw a 500 or 404 error
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Server Error (${res.status}): ${errorText.substring(0, 100)}`);
+            }
+
             const result = await res.json();
-            document.getElementById('result').innerText = 
+            
+            resultDiv.style.color = "#0070f3";
+            resultDiv.innerText = 
                 `Recommended Price: $${result.recommended_price} (Margin Protected: ${result.margin_protected})`;
+                
+        } catch (error) {
+            resultDiv.style.color = "red";
+            resultDiv.innerText = "Error: " + error.message;
         }
-    </script>
+    }
+  </script>
 </body>
 </html>
